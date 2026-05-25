@@ -8,8 +8,14 @@ version = "0.1.0"
 description = "Search agent that parses information from the web"
 requires-python = ">=3.10"
 dependencies = [
-    "google-adk[extensions]",
+    "google-adk[extensions,a2a]",
+    "uvicorn",
     "ddgs",
     "beautifulsoup4",
-    "requests"
+    "requests",
+    "a2a-sdk[http-server]"
 ]
+
+[project.scripts]
+search_agent_server = "search_agent.server:main"
+
