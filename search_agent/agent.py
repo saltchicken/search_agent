@@ -14,8 +14,8 @@ llm_client = LiteLlm(model=DEFAULT_MODEL)
 def search_duckduckgo(query: str) -> str:
     """Searches the open web for a given query to find relevant URLs."""
     # Mimic the client's tool execution log
-    logger.opt(colors=True).info(
-        f"<yellow>⚡ [Executing Tool: search_duckduckgo | Args: {{'query': '{query}'}}] ⚡</yellow>"
+    logger.opt(raw=True, colors=True).info(
+        f"<blue>[Search_Agent | tool_call]</blue>\n<yellow>⚡ [Executing Tool: search_duckduckgo | Args: {{'query': '{query}'}}] ⚡</yellow>\n"
     )
     
     try:
@@ -23,8 +23,8 @@ def search_duckduckgo(query: str) -> str:
         result_str = json.dumps(results)
         
         # Log a truncated success message so we don't spam the console with raw JSON
-        logger.opt(colors=True).info(
-            f"<yellow>✅ [Tool Result (search_duckduckgo): Found {len(results)} results] ✅</yellow>"
+        logger.opt(raw=True, colors=True).info(
+            f"<blue>[Search_Agent | tool_result]</blue>\n<yellow>✅ [Tool Result (search_duckduckgo): Found {len(results)} results] ✅</yellow>\n"
         )
         return result_str
     except Exception as e:
@@ -34,8 +34,8 @@ def search_duckduckgo(query: str) -> str:
 
 def scrape_website(url: str) -> str:
     """Scrapes a webpage and intelligently extracts the core textual content."""
-    logger.opt(colors=True).info(
-        f"<yellow>⚡ [Executing Tool: scrape_website | Args: {{'url': '{url}'}}] ⚡</yellow>"
+    logger.opt(raw=True, colors=True).info(
+        f"<blue>[Search_Agent | tool_call]</blue>\n<yellow>⚡ [Executing Tool: scrape_website | Args: {{'url': '{url}'}}] ⚡</yellow>\n"
     )
     
     try:
@@ -52,8 +52,8 @@ def scrape_website(url: str) -> str:
         extracted_text = " ".join([elem.get_text(strip=True) for elem in text_elements])
         extracted_text = extracted_text[:5000]
 
-        logger.opt(colors=True).info(
-            f"<yellow>✅ [Tool Result (scrape_website): Extracted {len(extracted_text)} characters] ✅</yellow>"
+        logger.opt(raw=True, colors=True).info(
+            f"<blue>[Search_Agent | tool_result]</blue>\n<yellow>✅ [Tool Result (scrape_website): Extracted {len(extracted_text)} characters] ✅</yellow>\n"
         )
         return extracted_text
     except Exception as e:
