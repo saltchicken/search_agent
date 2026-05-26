@@ -64,7 +64,7 @@ def scrape_website(url: str) -> str:
 
 # Initialize the ADK Agent
 root_agent = Agent(
-    name="Machine_Readable_Researcher",
+    name="search_agent",
     model=llm_client,
     instruction=
     """You are an autonomous research compiler working in a machine-to-machine pipeline. 
