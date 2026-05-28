@@ -1,10 +1,9 @@
 import json
+import trafilatura
 
-from bs4 import BeautifulSoup
 from ddgs import DDGS
 from google.adk import Agent
 from google.adk.models.lite_llm import LiteLlm
-import requests
 
 DEFAULT_MODEL = "ollama_chat/gemma4:e4b"
 llm_client = LiteLlm(model=DEFAULT_MODEL)
@@ -30,7 +29,7 @@ def search_duckduckgo(query: str) -> str:
 
 def scrape_website(url: str) -> str:
     """
-    Scrapes a webpage and intelligently extracts the core textual content, 
+    Scrapes a webpage and intelligently extracts the core textual content using trafilatura, 
     ignoring navigation menus, footers, and scripts.
     
     Args:
@@ -40,21 +39,17 @@ def scrape_website(url: str) -> str:
         The cleaned, extracted raw text from the webpage.
     """
     try:
-        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
-        response = requests.get(url, headers=headers, timeout=10)
-        response.raise_for_status()
+        # Trafilatura handles the request and headers internally
+        downloaded = trafilatura.fetch_url(url)
+        
+        if downloaded is None:
+            return f"Scraping failed: Could not fetch {url}"
 
-        soup = BeautifulSoup(response.text, 'html.parser')
-
-        # Strip out noisy HTML elements
-        for element in soup(
-            ["script", "style", "nav", "footer", "header", "aside"]):
-            element.decompose()
-
-        # Target content-heavy tags
-        text_elements = soup.find_all(['p', 'h1', 'h2', 'h3', 'li'])
-        extracted_text = " ".join(
-            [elem.get_text(strip=True) for elem in text_elements])
+        # Extract the core text payload
+        extracted_text = trafilatura.extract(downloaded)
+        
+        if not extracted_text:
+            return f"Scraping failed: No main text content found at {url}"
 
         # Truncate to the first 5000 characters to prevent LLM context overflow
         return extracted_text[:5000]
