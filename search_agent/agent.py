@@ -21,19 +21,21 @@ class ResearchReport(BaseModel):
     sources_used: list[str] = Field(description="List of URLs used as sources")
 
 
-def search_duckduckgo(query: str) -> str:
+def search_duckduckgo(query: str, time_limit: str = "w") -> str:
     """
     Searches the open web for a given query to find relevant URLs.
     
     Args:
         query: The specific topic or question to research.
+        time_limit: Limits the freshness of results. Acceptable values are 'd' (past day), 
+                    'w' (past week), 'm' (past month), or 'y' (past year).
         
     Returns:
         A JSON string containing the title, URL, and a brief snippet of the top results.
     """
     try:
-        # Fetch top 3 results to keep context windows manageable
-        results = DDGS().text(query, max_results=3)
+        # Fetch top 3 results and apply the freshness constraint
+        results = DDGS().text(query, max_results=3, timelimit=time_limit)
         return json.dumps(list(results))
     except Exception as e:
         logger.error(f"Search failed for query '{query}': {e}")
