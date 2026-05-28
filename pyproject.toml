@@ -12,7 +12,9 @@ dependencies = [
     "uvicorn",
     "ddgs",
     "trafilatura",
-    "a2a-sdk[http-server]"
+    "a2a-sdk[http-server]",
+    "loguru",
+
 ]
 
 [project.scripts]
